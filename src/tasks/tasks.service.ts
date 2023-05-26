@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { Task, TaskStatus } from './task.model'
+import { v4 } from 'uuid'
 
 @Injectable()
 export class TasksService {
   private tasks: Task[] = [
-    { id: 1, title: 'Create Models', status: TaskStatus.OPEN },
-    { id: 2, title: 'Create Controllers', status: TaskStatus.OPEN },
-    { id: 3, title: 'Create Database', status: TaskStatus.OPEN }
+    { id: v4(), title: 'Create Models', status: TaskStatus.OPEN },
+    { id: v4(), title: 'Create Controllers', status: TaskStatus.OPEN },
+    { id: v4(), title: 'Create Database', status: TaskStatus.OPEN }
   ]
 
   getTasks() {
@@ -15,7 +16,7 @@ export class TasksService {
 
   putTask(title: string): Task {
     const task = {
-      id: this.tasks.length + 1,
+      id: v4(),
       title,
       status: TaskStatus.OPEN
     }
@@ -23,7 +24,7 @@ export class TasksService {
     return task
   }
 
-  getTask(id: number): Task | undefined {
+  getTask(id: string): Task | undefined {
     const task = this.tasks.find((task) => task.id === id)
     if (task === undefined) {
       throw new NotFoundException(`Task with id:${id} was not found.`)
@@ -32,7 +33,7 @@ export class TasksService {
     return task
   }
 
-  deleteTask(id: number) {
+  deleteTask(id: string) {
     console.log(id)
     let foundItem = false
 

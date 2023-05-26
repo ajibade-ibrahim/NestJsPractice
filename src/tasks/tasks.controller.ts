@@ -15,7 +15,7 @@ export class TasksController {
   @Get('/:id')
   getTask(@Param('id') id: string): Task {
     console.log('id: ', id)
-    const task = this.tasksService.getTask(Number(id))
+    const task = this.tasksService.getTask(id)
     return task == null ? null : task
   }
 
@@ -25,11 +25,10 @@ export class TasksController {
   }
 
   @Delete('/:id')
-  deleteTask(@Param('id') id: unknown) {
-    const taskId = Number(id)
-    if (isNaN(taskId)) {
+  deleteTask(@Param('id') id: string) {
+    if (id?.trim().length === 0) {
       throw Error('Bad request')
     }
-    return this.tasksService.deleteTask(taskId)
+    return this.tasksService.deleteTask(id)
   }
 }
