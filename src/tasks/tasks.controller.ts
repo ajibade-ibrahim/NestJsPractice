@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common'
 import { TasksService } from './tasks.service'
 import { Task } from './task.model'
+import { TaskCreationDto } from './dto/task-creation-dto'
 
 @Controller('tasks')
 export class TasksController {
@@ -19,12 +20,7 @@ export class TasksController {
   }
 
   @Post()
-  createTask(@Body() model: { title: string }) {
-    console.log('model: ', model)
-    if (model?.title?.length < 1) {
-      throw Error('Bad request')
-    }
-
+  createTask(@Body() model: TaskCreationDto) {
     return this.tasksService.putTask(model.title)
   }
 
