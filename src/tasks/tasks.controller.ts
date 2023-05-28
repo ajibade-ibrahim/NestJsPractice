@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  BadRequestException
+} from '@nestjs/common'
 import { TasksService } from './tasks.service'
-import { Task } from './task.model'
 import { TaskCreationDto } from './dto/task-creation-dto'
+import { Task } from './task.entity'
 
 @Controller('tasks')
 export class TasksController {
@@ -13,14 +21,16 @@ export class TasksController {
   }
 
   @Get('/:id')
-  getTask(@Param('id') id: string): Task {
+  async getTask(@Param('id') id: string): Promise<Task> {
     console.log('id: ', id)
-    const task = this.tasksService.getTask(id)
-    return task == null ? null : task
+    return await this.tasksService.getTaskFromDb(id)
   }
 
   @Post()
   createTask(@Body() model: TaskCreationDto) {
+    if (model.title === undefined) {
+      throw new BadRequestException(model)
+    }
     return this.tasksService.putTask(model.title)
   }
 
