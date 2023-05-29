@@ -10,14 +10,15 @@ import {
 import { TasksService } from './tasks.service'
 import { TaskCreationDto } from './dto/task-creation-dto'
 import { Task } from './task.entity'
+import { DeleteResult } from 'typeorm'
 
 @Controller('tasks')
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
   @Get()
-  getTasks(): Task[] {
-    return this.tasksService.getTasks()
+  async getTasks(): Promise<Task[]> {
+    return await this.tasksService.getTasks()
   }
 
   @Get('/:id')
@@ -27,15 +28,15 @@ export class TasksController {
   }
 
   @Post()
-  createTask(@Body() model: TaskCreationDto) {
+  createTask(@Body() model: TaskCreationDto): Promise<Task> {
     if (model.title === undefined) {
       throw new BadRequestException(model)
     }
-    return this.tasksService.putTask(model.title)
+    return this.tasksService.createTask(model.title)
   }
 
   @Delete('/:id')
-  deleteTask(@Param('id') id: string) {
+  deleteTask(@Param('id') id: string): Promise<DeleteResult> {
     if (id?.trim().length === 0) {
       throw Error('Bad request')
     }

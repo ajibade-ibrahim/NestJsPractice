@@ -10,7 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'host.docker.internal',
-      port: 55001,
+      port: 55000,
       database: 'tasks-db',
       username: 'postgres',
       password: 'postgrespw',

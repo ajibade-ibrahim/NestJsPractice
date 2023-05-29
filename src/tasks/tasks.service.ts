@@ -4,6 +4,7 @@ import { v4 } from 'uuid'
 import { TasksRepository } from './task.repository'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Task } from './task.entity'
+import { DeleteResult } from 'typeorm'
 
 @Injectable()
 export class TasksService {
@@ -17,8 +18,13 @@ export class TasksService {
     @InjectRepository(Task) private taskRepository: TasksRepository
   ) {}
 
-  getTasks() {
-    return this.tasks
+  async getTasks(): Promise<Task[]> {
+    return (await this.taskRepository.query('select * from "Tasks"')) as Task[]
+  }
+
+  async getAllTasks(): Promise<Task[]> {
+    const builder = this.taskRepository.createQueryBuilder()
+    return builder.getMany()
   }
 
   putTask(title: string): Task {
@@ -52,21 +58,29 @@ export class TasksService {
     return task
   }
 
-  deleteTask(id: string) {
-    console.log(id)
-    let foundItem = false
+  async deleteTask(id: string): Promise<DeleteResult> {
+    return await this.taskRepository.delete(id)
 
-    this.tasks.find((item, index, tasks) => {
-      if (item.id === id) {
-        tasks.splice(index, 1)
-        foundItem = true
-        return true
-      }
-      return false
+    // this.tasks.find((item, index, tasks) => {
+    //   if (item.id === id) {
+    //     tasks.splice(index, 1)
+    //     foundItem = true
+    //     return true
+    //   }
+    //   return false
+    // })
+    //
+    // if (!foundItem) {
+    //   throw new NotFoundException(`Task with id:${id} was not found.`)
+    // }
+  }
+
+  async createTask(title: string): Promise<Task> {
+    const newTask = this.taskRepository.create({
+      status: TaskStatus.OPEN,
+      title
     })
 
-    if (!foundItem) {
-      throw new NotFoundException(`Task with id:${id} was not found.`)
-    }
+    return this.taskRepository.save(newTask)
   }
 }
