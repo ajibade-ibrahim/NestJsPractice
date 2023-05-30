@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module'
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'host.docker.internal',
-      port: 55000,
+      port: 55002,
       database: 'tasks-db',
       username: 'postgres',
       password: 'postgrespw',

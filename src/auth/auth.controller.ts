@@ -1,7 +1,15 @@
-import { Controller, Post, Body, ConflictException } from '@nestjs/common'
+import {
+  Controller,
+  Post,
+  Body,
+  ConflictException,
+  Req,
+  UseGuards
+} from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { AuthCredentialsDto } from './dto/authCredentialsDto'
 import { QueryFailedError } from 'typeorm'
+import { AuthGuard } from '@nestjs/passport'
 
 @Controller('auth')
 export class AuthController {
@@ -37,5 +45,11 @@ export class AuthController {
       }
       throw error
     }
+  }
+
+  @Post('/test')
+  @UseGuards(AuthGuard())
+  test(@Req() req) {
+    console.log('request: ', req)
   }
 }
